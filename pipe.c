@@ -3,44 +3,44 @@
 #include <assert.h>
 #include <stdio.h>
 
-void Close(int *q)
+void Close(int *p)
 {
-	int i = close(q[0]);
-	assert(i == 0);
-	i = close(q[1]);
-	assert(i == 0);
+	int i = close(p[0]);
+	assert(!i);
+	i = close(p[1]);
+	assert(!i);
 }
 
-void cat(int *q)
+void cat(int *p)
 {
-	int fd = dup2(q[1], STDOUT_FILENO);
+	int fd = dup2(p[1], STDOUT_FILENO);
 	assert(fd == STDOUT_FILENO);
-	Close(q);
+	Close(p);
 	execlp("cat", "cat", "/etc/passwd", NULL);
 	assert(0);
 }
 
-void grep(int *q)
+void grep(int *p)
 {
-	int fd = dup2(q[0], STDIN_FILENO);
+	int fd = dup2(p[0], STDIN_FILENO);
 	assert(fd == STDIN_FILENO);
-	Close(q);
+	Close(p);
 	execlp("grep", "grep", "root", NULL);
 	assert(0);
 }
 
 int main(void)
 {
-	int q[2];
-	pipe(q);
+	int p[2];
+	pipe(p);
 
 	void (*f[])(int *) = { cat, grep };
-	for (int i = 0; i < sizeof(f) / sizeof(f[0]); ++i) {
+	for (int i = 0; i < sizeof(f) / sizeof(*f); i++) {
 		if (fork() == 0)
-			f[i] (q);
+			f[i] (p);
 	}
 
-	Close(q);
+	Close(p);
 	while (wait(NULL) != -1) ;
 	perror("");
 }
