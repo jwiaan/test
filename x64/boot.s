@@ -1,9 +1,8 @@
 	org 0x7c00
 	cli
 
-	mov al, 0xfe
-	out 0x21, al
 	mov al, 0xff
+	out 0x21, al
 	out 0xa1, al
 
 	in al, 0x92
@@ -53,15 +52,23 @@ x86:	mov ax, 16
 	mov es, ax
 	mov ss, ax
 
+	mov eax, 0xfee00000
+	mov dword[eax+0x320], 0x20020
+	mov dword[eax+0x380], 0x10000000
+	mov dword[eax+0x3e0], 0xb
+
 	xor eax, eax
 	xor edi, edi
 	mov ecx, 0x1000
 	rep stosd
 
-	mov dword[0x0800], 0x1007
 	mov dword[0x0000], 0x1007
 	mov dword[0x1000], 0x2007
 	mov dword[0x2000], 0x0087
+
+	mov dword[0x1018], 0x3007
+	mov dword[0x3fb8], 0x4007
+	mov dword[0x4000], 0xfee00007
 
 	mov cr3, eax
 	mov eax, cr4
@@ -80,11 +87,9 @@ x86:	mov ax, 16
 	jmp 8:x64
 
 	bits 64
-x64:	mov rax, 0xffff800000000000
-	mov rsp, 0x8000
-	add rsp, rax
+x64:	mov rsp, 0x8000
 	mov rbx, 0x7e00
-	add rax, [rbx+24]
+	mov rax, [rbx+24]
 	jmp rax
 
 	times 510-($-$$) db 0

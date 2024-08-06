@@ -17,8 +17,7 @@ star:	push rax
 	wrmsr
 
 	mov ecx, 0xc0000082
-	mov rdx, 0xffff800000000000
-	add rdx, call
+	mov rdx, call
 	mov rax, rdx
 	shr rdx, 32
 	wrmsr
@@ -34,15 +33,15 @@ star:	push rax
 	ret
 
 time:	push rax
-	mov rax, 0xffff8000000b80a0
+	mov rax, 0xb80a0
 	mov byte[rax+1], 0xb
 	inc byte[rax]
-	mov al, 0x20
-	out 0x20, al
+	mov rax, 0xfee00000
+	mov dword[rax+0xb0], 0
 	pop rax
 	iretq
 
-call:	mov rax, 0xffff8000000b8000
+call:	mov rax, 0xb8000
 	mov byte[rax+1], 0xa
 	inc byte[rax]
 	o64 sysret
@@ -50,10 +49,9 @@ call:	mov rax, 0xffff8000000b8000
 loop:	syscall
 	jmp loop
 
-user:	mov rax, 0xffff800000000000
-	add rax, loop
+user:	mov rax, loop
 	push 35
-	push 0x4000
+	push 0x7000
 	pushfq
 	push 43
 	push rax

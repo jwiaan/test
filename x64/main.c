@@ -27,7 +27,7 @@ union u128 {
 struct s128 {
 	uint16_t u16[4];
 	uint32_t u32[2];
-} idt[9];
+} idt[33];
 
 uint64_t gdt[8] = {
 	0,
@@ -57,7 +57,7 @@ void init(void)
 	union u128 u = tssd();
 	gdt[6] = u.u64[0];
 	gdt[7] = u.u64[1];
-	idt[8] = gate(time);
+	idt[32] = gate(time);
 
 	struct s80 g = { sizeof(gdt) - 1, gdt };
 	struct s80 i = { sizeof(idt) - 1, idt };
