@@ -54,7 +54,7 @@ x86:	mov ax, 16
 
 	mov eax, 0xfee00000
 	mov dword[eax+0x320], 0x20020
-	mov dword[eax+0x380], 0x10000000
+	mov dword[eax+0x380], 0x10000
 	mov dword[eax+0x3e0], 0xb
 
 	xor eax, eax
@@ -62,13 +62,14 @@ x86:	mov ax, 16
 	mov ecx, 0x1000
 	rep stosd
 
+	mov dword[0x0800], 0x1007
 	mov dword[0x0000], 0x1007
 	mov dword[0x1000], 0x2007
 	mov dword[0x2000], 0x0087
 
-	mov dword[0x1018], 0x3007
-	mov dword[0x3fb8], 0x4007
-	mov dword[0x4000], 0xfee00007
+	mov dword[0x1ff8], 0x3007
+	mov dword[0x3ff8], 0x4007
+	mov dword[0x4ff8], 0xfee00007
 
 	mov cr3, eax
 	mov eax, cr4
@@ -87,9 +88,10 @@ x86:	mov ax, 16
 	jmp 8:x64
 
 	bits 64
-x64:	mov rsp, 0x8000
+x64:	mov rax, 0xffff800000000000
+	add rsp, 0x8000
 	mov rbx, 0x7e00
-	mov rax, [rbx+24]
+	add rax, [rbx+24]
 	jmp rax
 
 	times 510-($-$$) db 0

@@ -1,6 +1,6 @@
 #include <stdint.h>
 
-void time(void);
+extern char time;
 void star(void);
 void user(void);
 
@@ -8,7 +8,7 @@ struct {
 	uint32_t u32;
 	uint64_t u64[12];
 	uint16_t u16[2];
-} __attribute__((packed)) tss = {.u64[0] = 0x5000,.u16[1] = 104 };
+} __attribute__((packed)) tss = {.u64[0] = 0xffff800000006000,.u16[1] = 104 };
 
 struct s80 {
 	uint16_t u16;
@@ -27,7 +27,7 @@ union u128 {
 struct s128 {
 	uint16_t u16[4];
 	uint32_t u32[2];
-} idt[33];
+} idt[33] = { };
 
 uint64_t gdt[8] = {
 	0,
@@ -57,7 +57,7 @@ void init(void)
 	union u128 u = tssd();
 	gdt[6] = u.u64[0];
 	gdt[7] = u.u64[1];
-	idt[32] = gate(time);
+	idt[32] = gate(&time);
 
 	struct s80 g = { sizeof(gdt) - 1, gdt };
 	struct s80 i = { sizeof(idt) - 1, idt };
