@@ -1,0 +1,13 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "linux",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/vmlinux",
+            "cwd": "${workspaceFolder}",
+            "miDebuggerServerAddress": ":1234"
+        }
+    ]
+}
